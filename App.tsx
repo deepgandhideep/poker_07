@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { io } from "socket.io-client";
 import "./App.css";
 import useAppSocket from "./hooks/useAppSocket";
 import tableSvg from "./assets/table-nobg-svg-01.svg";
@@ -7,16 +8,21 @@ import { generateTable } from "./utils/players";
 
 function App() {
   const [playerName, setPlayerName] = useState<string>("");
+  const [gameState, setGameState] = useState({});
   const { joinGame } = useAppSocket();
   const [players, setPlayers] = useState<Array<any>>([]);
+  const socket = io("http://localhost:3000");
 
   useEffect(() => {
     setPlayers(generateTable());
+    socket.on("gameState", (gameState) => {
+      setGameState(gameState);
+    });
   }, []);
 
-  // const handleJoinGame = () => {
-  //   return joinGame(playerName);
-  // };
+  const playerAction = (action, amount) => {
+    socket.emit("playerAction", { action, amount });
+  };
 
   const renderBoard = () => {
     return players.map((player: any, index: number) => {

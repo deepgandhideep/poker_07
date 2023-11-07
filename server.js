@@ -38,7 +38,6 @@ io.on("connection", (socket) => {
   socket.on("playerAction", (action) => {
     const playerId = socket.id;
     const player = players[playerId];
-    console.log("playerAction " + action);
     game.playerAction(player, action.action, action.amount);
     let gameState = game.gameState;
     gameState["players"] = players;
@@ -95,9 +94,6 @@ io.on("connection", (socket) => {
 
   socket.on("disconnect", () => {
     console.log("User disconnected: " + socket.id);
-    // let gameState = game.gameState;
-    // gameState["players"] = players;
-    // io.emit("gameState", game.gameState);
     io.emit("message", "A player has left the game.");
   });
 });
